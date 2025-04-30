@@ -1,32 +1,45 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Engine/TargetPoint.h" // Incluir el header correcto para TargetPoint
 #include "CubeAgent.generated.h"
 
 UCLASS()
 class PRACTICASEMAFOROS_API ACubeAgent : public AActor
 {
-	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	ACubeAgent();
+    GENERATED_BODY()
+
+public:
+    // Sets default values for this actor's properties
+    ACubeAgent();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
 
 public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pathing", meta = (ExposeOnSpawn = "true", MakeEditWidget = "true"))
-    TArray<FVector> ThePath;
+
+    // Propiedades editables en el editor
+    UPROPERTY(EditAnywhere, Category = "Movement")
+    float MovementSpeed;
+
+    UPROPERTY(EditAnywhere, Category = "Movement")
+    float CloseEnoughDistance;
+
+    UPROPERTY(EditAnywhere, Category = "Target Points")
+    TArray<class ATargetPoint*> TargetPoints;
 
 private:
-    UPROPERTY(EditDefaultsOnly, Category = "Components") class UBoxComponent* BoxCollider;
-    UPROPERTY(EditDefaultsOnly, Category = "Components") class UStaticMeshComponent* PlatformMesh;
-    UPROPERTY(EditDefaultsOnly, Category = "Components") class UInterpToMovementComponent* MovementComponent;
+    // Índice del punto de destino actual
+    int32 CurrentTargetIndex;
+
+    // Referencia al componente de malla estática
+    UPROPERTY(VisibleAnywhere)
+    class UStaticMeshComponent* MeshComponent;
+
+    // Función para mover el cubo hacia el objetivo actual
+    void MoveToTarget(float DeltaTime);
 };
